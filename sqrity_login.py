@@ -242,7 +242,7 @@ def show_loading_screen():
 def main():
     check_and_install_ctk()
     # Show loading screen first
-    # show_loading_screen()
+    show_loading_screen()
     init_db()
 
     # Configure customtkinter theme
@@ -369,3 +369,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
