@@ -124,6 +124,26 @@ close_btn = ctk.CTkButton(
 )
 close_btn.pack(pady=20)
 
+# ---------- Copy password from selection ----------
+def copy_selected_password(event=None):
+    selected = tree.focus()  # get selected row ID
+    if not selected:
+        return
+
+    values = tree.item(selected, "values")  # (app_name, password)
+    if not values or len(values) < 2:
+        return
+
+    password = values[1]
+
+    # Copy to clipboard
+    root.clipboard_clear()
+    root.clipboard_append(password)
+    root.update()
+
+    messagebox.showinfo("Copied", "Password copied to clipboard!")
+tree.bind("<Double-1>", copy_selected_password)
+
 # Center the window
 root.update_idletasks()
 
