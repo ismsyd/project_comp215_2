@@ -67,7 +67,7 @@ root.resizable(False, False)
 # Main container frame
 main_frame = ctk.CTkFrame(
     root,
-    fg_color="#1f2933",
+    fg_color="#2b2b2b",
     corner_radius=10
 )
 main_frame.pack(expand=True, fill="both")
@@ -80,7 +80,7 @@ center_frame.place(relx=0.5, rely=0.5, anchor="center")
 title_label = ctk.CTkLabel(
     center_frame,
     text="SQRITY - PM Dashboard",
-    text_color="#f9fafb",
+    text_color="#ffffff",
     font=("Segoe UI", 20, "bold")
 )
 title_label.pack(pady=(0, 10))
@@ -89,7 +89,7 @@ title_label.pack(pady=(0, 10))
 user_label = ctk.CTkLabel(
     center_frame,
     text=f"Welcome, {current_user}",
-    text_color="#d1d5db",
+    text_color="#ffffff",
     font=("Segoe UI", 18)
 )
 user_label.pack(pady=(0, 30))
@@ -97,7 +97,7 @@ user_label.pack(pady=(0, 30))
 # Buttons container
 buttons_frame = ctk.CTkFrame(center_frame, fg_color="transparent")
 buttons_frame.pack(pady=(0, 30))
-btn_frm = tk.Frame(center_frame, bg="#1f2933")
+btn_frm = tk.Frame(center_frame, bg="#2b2b2b")
 btn_frm.pack(pady=(5, 10))
 
 # Password Generator button
@@ -108,7 +108,8 @@ generator_btn = ctk.CTkButton(
     width=200,
     height=80,
     font=("Segoe UI", 18, "bold"),
-    hover_color="#1d4ed8"
+    fg_color="#1f59ab",
+
 )
 generator_btn.pack(side="left", padx=15)
 
@@ -120,7 +121,8 @@ view_btn = ctk.CTkButton(
     width=200,
     height=80,
     font=("Segoe UI", 18, "bold"),
-    hover_color="#1d4ed8"
+    fg_color="#1f59ab",
+
 )
 view_btn.pack(side="left", padx=15)
 
@@ -141,7 +143,7 @@ logout_btn.grid(row=0, column=1, padx=15, pady=10)
 footer = ctk.CTkLabel(
     center_frame,
     text="Manage your passwords securely.",
-    text_color="#9ca3af",
+    text_color="#ffffff",
     font=("Segoe UI", 16)
 )
 footer.pack(pady=20)
