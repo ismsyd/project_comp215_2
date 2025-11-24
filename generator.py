@@ -76,10 +76,10 @@ def view_password():
 def toggle_password_visibility():
     if entry_password.cget('show') == '•':
         entry_password.configure(show='')
-        btn_toggle_visibility.configure(text="Hide Password")
+        btn_toggle_visibility.configure(text="Hide")
     else:
         entry_password.configure(show='•')
-        btn_toggle_visibility.configure(text="Show Password")
+        btn_toggle_visibility.configure(text="Show")
 
 
 # ----------------------
@@ -295,7 +295,6 @@ def main():
     root.geometry(CenterWindowToDisplay(root, 650, 600, root._get_window_scaling()))
 
     root.mainloop()
-
 
 if __name__ == "__main__":
     main()
