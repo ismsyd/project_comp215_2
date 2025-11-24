@@ -6,16 +6,8 @@ import subprocess
 import sys
 import customtkinter as ctk
 
-# ---------- Logout and reopen Login window ----------
-def logout(window):
-    """Logout and return to login window."""
-    messagebox.showinfo("Logout", "You have been logged out.")
-    window.destroy()
-    subprocess.Popen([sys.executable, "login.py"],shell=True)
-    
 # ---------- Get Logged-in Username ----------
 if len(sys.argv) < 2:
-    # If someone runs this file directly without going through login.py
     root = tk.Tk()
     root.withdraw()
     messagebox.showerror("Error", "No username provided to Dashboard.\nOpen this window from the login page.")
@@ -25,29 +17,36 @@ current_user = sys.argv[1]
 
 # ---------- Call Other Windows ----------
 def open_generator():
-    """Open generator.py and pass the current username."""
     try:
         subprocess.Popen([sys.executable, "generator.py", current_user])
     except Exception as e:
         messagebox.showerror("Error", f"Could not open password generator.\n\n{e}")
 
 def open_view():
-    """Open view.py and pass the current username."""
     try:
         subprocess.Popen([sys.executable, "view.py", current_user])
     except Exception as e:
         messagebox.showerror("Error", f"Could not open vault viewer.\n\n{e}")
 
+# ---------- LOGOUT FUNCTION (FULLY FIXED) ----------
+def logout():
+    try:
+        subprocess.Popen([sys.executable, "sqrity_login.py"])
+    except Exception as e:
+        messagebox.showerror("Error", f"Could not return to login page.\n\n{e}")
+        return
+
+    root.destroy()   # close dashboard ONLY, not the app
+
+# ---------- Center Window ----------
 def CenterWindowToDisplay(Screen: ctk.CTk, width: int, height: int, scale_factor: float = 1.0):
-    """Centers the window to the main display/monitor"""
     screen_width = Screen.winfo_screenwidth()
     screen_height = Screen.winfo_screenheight()
-    x = int(((screen_width/2) - (width/2)) * scale_factor)
-    y = int(((screen_height/2) - (height/2)) * scale_factor)
+    x = int(((screen_width / 2) - (width / 2)) * scale_factor)
+    y = int(((screen_height / 2) - (height / 2)) * scale_factor)
     return f"{width}x{height}+{x}+{y}"
 
-# ---------- UI Setup with customtkinter ----------
-# ---------- UI Setup with customtkinter ----------
+# ---------- UI Setup ----------
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
 
@@ -56,19 +55,12 @@ root.title("SQRITY - PM Dashboard")
 root.geometry("650x350")
 root.resizable(False, False)
 
-# Main container frame
-main_frame = ctk.CTkFrame(
-    root,
-    fg_color="#1f2933",
-    corner_radius=10
-)
+main_frame = ctk.CTkFrame(root, fg_color="#1f2933", corner_radius=10)
 main_frame.pack(expand=True, fill="both")
 
-# Center container for all content
 center_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
 center_frame.place(relx=0.5, rely=0.5, anchor="center")
 
-# Title
 title_label = ctk.CTkLabel(
     center_frame,
     text="SQRITY - PM Dashboard",
@@ -77,7 +69,6 @@ title_label = ctk.CTkLabel(
 )
 title_label.pack(pady=(0, 10))
 
-# Logged-in username
 user_label = ctk.CTkLabel(
     center_frame,
     text=f"Welcome, {current_user}",
@@ -86,13 +77,9 @@ user_label = ctk.CTkLabel(
 )
 user_label.pack(pady=(0, 30))
 
-# Buttons container
 buttons_frame = ctk.CTkFrame(center_frame, fg_color="transparent")
 buttons_frame.pack(pady=(0, 30))
-btn_frm = tk.Frame(card, bg=CARD_COLOR)
-btn_frm.pack(pady=(5, 10))
 
-# Password Generator button
 generator_btn = ctk.CTkButton(
     buttons_frame,
     text="Password Generator",
@@ -104,7 +91,6 @@ generator_btn = ctk.CTkButton(
 )
 generator_btn.pack(side="left", padx=15)
 
-# View Vault button
 view_btn = ctk.CTkButton(
     buttons_frame,
     text="Open Vault",
@@ -116,23 +102,19 @@ view_btn = ctk.CTkButton(
 )
 view_btn.pack(side="left", padx=15)
 
-logout_btn = tk.Button(
-    btn_frm,
+# ---------- LOGOUT BUTTON (NEW) ----------
+logout_btn = ctk.CTkButton(
+    center_frame,
     text="Logout",
-    command=lambda: logout(root),
-    bg="#B91C1C",
-    fg="white",
-    activebackground="#991B1B",
-    font=("Segoe UI", 10, "bold"),
-    width=12,
-    relief="flat",
-    padx=5,
-    pady=5,
+    command=logout,
+    width=150,
+    height=45,
+    fg_color="#ef4444",
+    hover_color="#b91c1c",
+    font=("Segoe UI", 16, "bold")
 )
-logout_btn.grid(row=0, column=1, padx=15, pady=10)
-style_button(logout_btn)
+logout_btn.pack(pady=10)
 
-# Footer text
 footer = ctk.CTkLabel(
     center_frame,
     text="Manage your passwords securely.",
@@ -141,9 +123,7 @@ footer = ctk.CTkLabel(
 )
 footer.pack(pady=20)
 
-# CENTER THE WINDOW
 root.update_idletasks()
 root.geometry(CenterWindowToDisplay(root, 650, 350, root._get_window_scaling()))
 
 root.mainloop()
-
