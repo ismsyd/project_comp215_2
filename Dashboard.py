@@ -6,6 +6,13 @@ import subprocess
 import sys
 import customtkinter as ctk
 
+# ---------- Logout and reopen Login window ----------
+def logout(window):
+    """Logout and return to login window."""
+    messagebox.showinfo("Logout", "You have been logged out.")
+    window.destroy()
+    subprocess.Popen([sys.executable, "login.py"],shell=True)
+    
 # ---------- Get Logged-in Username ----------
 if len(sys.argv) < 2:
     # If someone runs this file directly without going through login.py
@@ -82,6 +89,8 @@ user_label.pack(pady=(0, 30))
 # Buttons container
 buttons_frame = ctk.CTkFrame(center_frame, fg_color="transparent")
 buttons_frame.pack(pady=(0, 30))
+btn_frm = tk.Frame(card, bg=CARD_COLOR)
+btn_frm.pack(pady=(5, 10))
 
 # Password Generator button
 generator_btn = ctk.CTkButton(
@@ -107,6 +116,22 @@ view_btn = ctk.CTkButton(
 )
 view_btn.pack(side="left", padx=15)
 
+logout_btn = tk.Button(
+    btn_frm,
+    text="Logout",
+    command=lambda: logout(root),
+    bg="#B91C1C",
+    fg="white",
+    activebackground="#991B1B",
+    font=("Segoe UI", 10, "bold"),
+    width=12,
+    relief="flat",
+    padx=5,
+    pady=5,
+)
+logout_btn.grid(row=0, column=1, padx=15, pady=10)
+style_button(logout_btn)
+
 # Footer text
 footer = ctk.CTkLabel(
     center_frame,
@@ -121,3 +146,4 @@ root.update_idletasks()
 root.geometry(CenterWindowToDisplay(root, 650, 350, root._get_window_scaling()))
 
 root.mainloop()
+
