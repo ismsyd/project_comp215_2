@@ -6,13 +6,15 @@ import subprocess
 import sys
 import customtkinter as ctk
 
-
 # ---------- Logout and reopen Login window ----------
 def logout(window):
     """Logout and return to login window."""
-    messagebox.showinfo("Logout", "You have been logged out.")
-    window.destroy()
-    subprocess.Popen([sys.executable, "login.py"], shell=True)
+    window.destroy()  # close dashboard
+
+    # Import login function and reopen login UI
+    from sqrity_login import main as login_main
+    login_main()  # reopen login window
+
 
 
 # ---------- Get Logged-in Username ----------
