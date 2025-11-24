@@ -49,7 +49,7 @@ root.geometry("650x400")
 root.resizable(False, False)
 
 # Main container
-main_frame = ctk.CTkFrame(root, fg_color="#1E1E1E", corner_radius=10)
+main_frame = ctk.CTkFrame(root, fg_color="#2b2b2b", corner_radius=10)
 main_frame.pack(expand=True, fill="both")
 
 # Title
@@ -57,7 +57,7 @@ title_label = ctk.CTkLabel(
     main_frame,
     text=f"Stored Passwords for {current_user}",
     font=("Segoe UI", 20, "bold"),
-    text_color="#00FFF0"
+    text_color="#ffffff"
 )
 title_label.pack(pady=20)
 
@@ -78,15 +78,15 @@ tree.column("password", width=350, anchor="center")
 style = ttk.Style()
 style.theme_use("default")
 style.configure("Treeview",
-                background="#2b2b2b",
+                background="#454545",
                 foreground="white",
-                fieldbackground="#2b2b2b",
+                fieldbackground="#454545",
                 borderwidth=0,
                 font=("Segoe UI", 16),
                 rowheight=45)
 style.configure("Treeview.Heading",
-                background="#1a1a1a",
-                foreground="#00FFF0",
+                background="#1b1b1b",
+                foreground="#ffffff",
                 relief="flat",
                 font=("Segoe UI", 16,'bold'))
 style.map("Treeview", background=[('selected', '#2563eb')])
@@ -110,19 +110,6 @@ try:
 except Exception as e:
     messagebox.showerror("Database Error", str(e))
 
-# Close button
-close_btn = ctk.CTkButton(
-    main_frame,
-    text="Close",
-    font=("Segoe UI", 14, "bold"),
-    width=120,
-    height=35,
-    fg_color="#00FFF0",
-    hover_color="#00D4C7",
-    text_color="#000000",
-    command=root.destroy
-)
-close_btn.pack(pady=20)
 
 # ---------- Copy password from selection ----------
 def copy_selected_password(event=None):
@@ -144,9 +131,14 @@ def copy_selected_password(event=None):
     messagebox.showinfo("Copied", "Password copied to clipboard!")
 tree.bind("<Double-1>", copy_selected_password)
 
+
+
+
 # Center the window
 root.update_idletasks()
 
 root.geometry(CenterWindowToDisplay(root, 650, 400, root._get_window_scaling()))
+
+
 
 root.mainloop()
