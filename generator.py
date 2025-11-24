@@ -192,7 +192,7 @@ def main():
     root.resizable(False, False)
 
     # Main container
-    main_frame = ctk.CTkFrame(root, fg_color="#1f2933", corner_radius=10)
+    main_frame = ctk.CTkFrame(root, fg_color="#2b2b2b", corner_radius=10)
     main_frame.pack(expand=True, fill="both")
 
     # Title
@@ -219,6 +219,7 @@ def main():
 
     entry_app = ctk.CTkEntry(
         frame,
+        fg_color="#404040",
         font=("Segoe UI", 16),
         width=400,
         height=35,
@@ -241,6 +242,7 @@ def main():
 
     entry_length = ctk.CTkEntry(
         options_frame,
+        fg_color="#404040",
         font=("Segoe UI", 14),
         width=80,
         height=30,
@@ -269,6 +271,7 @@ def main():
 
     chk_uppercase = ctk.CTkCheckBox(
         checkboxes_frame,
+        fg_color="#1f59ab",
         text="Uppercase Letters (A-Z)",
         variable=var_uppercase,
         font=("Segoe UI", 12)
@@ -277,6 +280,7 @@ def main():
 
     chk_lowercase = ctk.CTkCheckBox(
         checkboxes_frame,
+        fg_color="#1f59ab",
         text="Lowercase Letters (a-z)",
         variable=var_lowercase,
         font=("Segoe UI", 12)
@@ -285,6 +289,7 @@ def main():
 
     chk_numbers = ctk.CTkCheckBox(
         checkboxes_frame,
+        fg_color="#1f59ab",
         text="Numbers (0-9)",
         variable=var_numbers,
         font=("Segoe UI", 12)
@@ -293,6 +298,7 @@ def main():
 
     chk_symbols = ctk.CTkCheckBox(
         checkboxes_frame,
+        fg_color="#1f59ab",
         text="Symbols (!@#$%...)",
         variable=var_symbols,
         font=("Segoe UI", 12)
@@ -314,6 +320,7 @@ def main():
 
     entry_password = ctk.CTkEntry(
         password_frame,
+        fg_color="#404040",
         font=("Segoe UI", 16),
         width=400,
         height=35,
@@ -340,7 +347,7 @@ def main():
         frame,
         text="✓ You can edit the generated password or type your own",
         font=("Segoe UI", 12),
-        text_color="lightblue",
+        text_color="#ffffff",
         anchor="w"
     )
     lbl_password_info.grid(row=5, column=0, sticky="w", pady=(0, 20))
@@ -352,6 +359,7 @@ def main():
     # Buttons
     btn_generate = ctk.CTkButton(
         buttons_frame,
+        fg_color="#1f59ab",
         text="Generate Custom Password",
         font=("Segoe UI", 16, "bold"),
         width=220,
@@ -362,6 +370,7 @@ def main():
 
     btn_view = ctk.CTkButton(
         buttons_frame,
+        fg_color="#1f59ab",
         text="View Password",
         font=("Segoe UI", 16, "bold"),
         width=220,
