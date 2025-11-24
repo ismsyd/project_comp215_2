@@ -194,7 +194,7 @@ def show_loading_screen():
 def main():
     check_and_install_ctk()
     # Show loading screen first
-    show_loading_screen()
+    #show_loading_screen()
     init_db()
 
     # Configure customtkinter theme
@@ -266,7 +266,7 @@ def main():
 
     show_btn = ctk.CTkButton(
         form_frame,
-        text="🙉",
+        text="🙈",
         command=toggle_password,
         font=("Segoe UI", 20),
         width=60,
@@ -315,8 +315,7 @@ def main():
     root.update_idletasks()
 
 
-    root.update_idletasks()
-    root.geometry(CenterWindowToDisplay(root, 600, 350, root._get_window_scaling()))
+    root.geometry(CenterWindowToDisplay(root, 650, 350, root._get_window_scaling()))
 
     root.mainloop()
 
