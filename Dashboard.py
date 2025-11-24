@@ -4,6 +4,7 @@ import tkinter as tk
 from tkinter import messagebox
 import subprocess
 import sys
+import customtkinter as ctk
 
 # ---------- Get Logged-in Username ----------
 if len(sys.argv) < 2:
@@ -30,90 +31,93 @@ def open_view():
     except Exception as e:
         messagebox.showerror("Error", f"Could not open vault viewer.\n\n{e}")
 
-# ---------- UI Setup (same style as login) ----------
-root = tk.Tk()
+def CenterWindowToDisplay(Screen: ctk.CTk, width: int, height: int, scale_factor: float = 1.0):
+    """Centers the window to the main display/monitor"""
+    screen_width = Screen.winfo_screenwidth()
+    screen_height = Screen.winfo_screenheight()
+    x = int(((screen_width/2) - (width/2)) * scale_factor)
+    y = int(((screen_height/2) - (height/2)) * scale_factor)
+    return f"{width}x{height}+{x}+{y}"
+
+# ---------- UI Setup with customtkinter ----------
+# ---------- UI Setup with customtkinter ----------
+ctk.set_appearance_mode("dark")
+ctk.set_default_color_theme("blue")
+
+root = ctk.CTk()
 root.title("SQRITY - PM Dashboard")
-root.geometry("450x300")
+root.geometry("650x350")
 root.resizable(False, False)
 
-# Colors & fonts – matching login style
-BG_COLOR = "#111111"
-CARD_COLOR = "#1f2933"
-BTN_COLOR = "#2563eb"
-BTN_HOVER = "#1d4ed8"
-TEXT_COLOR = "#f9fafb"
-ENTRY_BG = "#111827"
+# Main container frame
+main_frame = ctk.CTkFrame(
+    root,
+    fg_color="#1f2933",
+    corner_radius=10
+)
+main_frame.pack(expand=True, fill="both")
 
-root.configure(bg=BG_COLOR)
-
-# Center frame like login card
-card = tk.Frame(root, bg=CARD_COLOR, bd=0, highlightthickness=0)
-card.place(relx=0.5, rely=0.5, anchor="center", width=420, height=260)
+# Center container for all content
+center_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
+center_frame.place(relx=0.5, rely=0.5, anchor="center")
 
 # Title
-title_label = tk.Label(
-    card,
+title_label = ctk.CTkLabel(
+    center_frame,
     text="SQRITY - PM Dashboard",
-    fg=TEXT_COLOR,
-    bg=CARD_COLOR,
-    font=("Segoe UI Semibold", 16)
+    text_color="#f9fafb",
+    font=("Segoe UI", 20, "bold")
 )
-title_label.pack(pady=(15, 5))
+title_label.pack(pady=(0, 10))
 
 # Logged-in username
-user_label = tk.Label(
-    card,
+user_label = ctk.CTkLabel(
+    center_frame,
     text=f"Welcome, {current_user}",
-    fg="#d1d5db",
-    bg=CARD_COLOR,
-    font=("Segoe UI", 11)
+    text_color="#d1d5db",
+    font=("Segoe UI", 18)
 )
-user_label.pack(pady=(0, 20))
+user_label.pack(pady=(0, 30))
 
 # Buttons container
-buttons_frame = tk.Frame(card, bg=CARD_COLOR)
-buttons_frame.pack(pady=(0, 10))
-
-def style_button(btn: tk.Button):
-    btn.configure(
-        bg=BTN_COLOR,
-        fg="white",
-        activebackground=BTN_HOVER,
-        activeforeground="white",
-        relief="flat",
-        bd=0,
-        font=("Segoe UI Semibold", 10),
-        padx=20,
-        pady=6,
-        cursor="hand2"
-    )
+buttons_frame = ctk.CTkFrame(center_frame, fg_color="transparent")
+buttons_frame.pack(pady=(0, 30))
 
 # Password Generator button
-generator_btn = tk.Button(
+generator_btn = ctk.CTkButton(
     buttons_frame,
     text="Password Generator",
-    command=open_generator
+    command=open_generator,
+    width=200,
+    height=80,
+    font=("Segoe UI", 18, "bold"),
+    hover_color="#1d4ed8"
 )
-style_button(generator_btn)
-generator_btn.grid(row=0, column=0, padx=15, pady=10)
+generator_btn.pack(side="left", padx=15)
 
 # View Vault button
-view_btn = tk.Button(
+view_btn = ctk.CTkButton(
     buttons_frame,
     text="Open Vault",
-    command=open_view
+    command=open_view,
+    width=200,
+    height=80,
+    font=("Segoe UI", 18, "bold"),
+    hover_color="#1d4ed8"
 )
-style_button(view_btn)
-view_btn.grid(row=0, column=1, padx=15, pady=10)
+view_btn.pack(side="left", padx=15)
 
-# Footer text (optional small hint)
-footer = tk.Label(
-    card,
+# Footer text
+footer = ctk.CTkLabel(
+    center_frame,
     text="Manage your passwords securely.",
-    fg="#9ca3af",
-    bg=CARD_COLOR,
-    font=("Segoe UI", 9)
+    text_color="#9ca3af",
+    font=("Segoe UI", 16)
 )
-footer.pack(side="bottom", pady=(0, 10))
+footer.pack(pady=20)
+
+# CENTER THE WINDOW
+root.update_idletasks()
+root.geometry(CenterWindowToDisplay(root, 650, 350, root._get_window_scaling()))
 
 root.mainloop()
