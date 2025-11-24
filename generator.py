@@ -53,8 +53,8 @@ def generate_password():
     entry_password.configure(state="normal")
     entry_password.delete(0, tk.END)
     entry_password.insert(0, password)
-    # Hide the password by default
-    entry_password.configure(show="•", state="readonly")
+    # Allow editing and hide the password by default
+    entry_password.configure(show="•", state="normal")
     # Store the actual password for viewing later
     entry_password.actual_password = password
 
@@ -63,11 +63,34 @@ def generate_password():
 #   VIEW GENERATED PASS
 # ----------------------
 def view_password():
-    if hasattr(entry_password, 'actual_password'):
-        pwd = entry_password.actual_password
-        messagebox.showinfo("Generated Password", pwd)
+    current_password = entry_password.get()
+    if current_password:
+        messagebox.showinfo("Current Password", current_password)
     else:
-        messagebox.showerror("Error", "No password generated yet.")
+        messagebox.showerror("Error", "No password entered.")
+
+
+# ----------------------
+#   TOGGLE PASSWORD VISIBILITY
+# ----------------------
+def toggle_password_visibility():
+    if entry_password.cget('show') == '•':
+        entry_password.configure(show='')
+        btn_toggle_visibility.configure(text="Hide Password")
+    else:
+        entry_password.configure(show='•')
+        btn_toggle_visibility.configure(text="Show Password")
+
+
+# ----------------------
+#   CLEAR PASSWORD FIELD
+# ----------------------
+def clear_password():
+    entry_password.configure(state="normal")
+    entry_password.delete(0, tk.END)
+    entry_password.configure(show="•", state="normal")
+    if hasattr(entry_password, 'actual_password'):
+        delattr(entry_password, 'actual_password')
 
 
 # ----------------------
@@ -75,16 +98,24 @@ def view_password():
 # ----------------------
 def save_password(username):
     app_name = entry_app.get().strip()
-
-    if not hasattr(entry_password, 'actual_password'):
-        messagebox.showerror("Error", "Generate a password first.")
-        return
-
-    pwd = entry_password.actual_password
+    pwd = entry_password.get()
 
     if not app_name:
         messagebox.showerror("Error", "Please enter the application name.")
         return
+
+    if not pwd:
+        messagebox.showerror("Error", "Please enter or generate a password.")
+        return
+
+    # Optional: Add password strength validation
+    if len(pwd) < 8:
+        response = messagebox.askyesno(
+            "Weak Password",
+            "The password is less than 8 characters. This may be insecure.\n\nDo you want to save it anyway?"
+        )
+        if not response:
+            return
 
     try:
         with sqlite3.connect("vault.db") as conn:
@@ -96,6 +127,10 @@ def save_password(username):
             conn.commit()
 
         messagebox.showinfo("Success", f"Password saved for {app_name}!")
+
+        # Clear fields after successful save
+        entry_app.delete(0, tk.END)
+        clear_password()
 
     except Exception as e:
         messagebox.showerror("Database Error", f"Could not save password:\n\n{e}")
@@ -120,7 +155,7 @@ def main():
 
     root = ctk.CTk()
     root.title("SQRITY - Password Generator")
-    root.geometry("600x450")
+    root.geometry("650x600")  # Increased height to accommodate new buttons
     root.resizable(False, False)
 
     # Main container
@@ -138,7 +173,7 @@ def main():
 
     # Form frame
     frame = ctk.CTkFrame(main_frame, fg_color="transparent")
-    frame.pack(pady=10)
+    frame.pack(pady=10, padx=20, fill="both", expand=True)
 
     # Application Name
     lbl_app = ctk.CTkLabel(
@@ -147,79 +182,117 @@ def main():
         font=("Segoe UI", 16),
         anchor="w"
     )
-    lbl_app.grid(row=0, column=0, sticky="w")
+    lbl_app.grid(row=0, column=0, sticky="w", pady=(0, 5))
 
     global entry_app
     entry_app = ctk.CTkEntry(
         frame,
         font=("Segoe UI", 16),
-        width=300,
-        height=35
+        width=400,
+        height=35,
+        placeholder_text="Enter application/service name"
     )
-    entry_app.grid(row=1, column=0, pady=(0, 20))
+    entry_app.grid(row=1, column=0, pady=(0, 20), sticky="ew")
 
     # Generated password
     lbl_password = ctk.CTkLabel(
         frame,
-        text="Generated Password:",
+        text="Password:",
         font=("Segoe UI", 16),
         anchor="w"
     )
-    lbl_password.grid(row=2, column=0, sticky="w")
+    lbl_password.grid(row=2, column=0, sticky="w", pady=(0, 5))
 
-    # Password entry frame (for entry + show button)
+    # Password entry frame (for entry + action buttons)
     password_frame = ctk.CTkFrame(frame, fg_color="transparent")
-    password_frame.grid(row=3, column=0, pady=(0, 20), sticky="ew")
+    password_frame.grid(row=3, column=0, pady=(0, 10), sticky="ew")
 
     global entry_password
     entry_password = ctk.CTkEntry(
         password_frame,
         font=("Segoe UI", 16),
-        width=300,
+        width=400,
         height=35,
-        state="readonly",
-        show=""  # Hide password by default with bullet points
+        show="•",  # Hide password by default with bullet points
+        placeholder_text="Generate or type your password"
     )
-    entry_password.pack(side="left")
-    entry_password.configure(state='readonly')
+    entry_password.pack(side="left", fill="x", expand=True)
+
+    # Password action buttons frame (right side)
+    password_actions_frame = ctk.CTkFrame(password_frame, fg_color="transparent")
+    password_actions_frame.pack(side="right", padx=(5, 0))
+
+    global btn_toggle_visibility
+    btn_toggle_visibility = ctk.CTkButton(
+        password_actions_frame,
+        text="Show",
+        font=("Segoe UI", 12),
+        width=60,
+        height=30,
+        command=toggle_password_visibility
+    )
+    btn_toggle_visibility.pack(side="top", pady=(0, 2))
+
+    btn_clear = ctk.CTkButton(
+        password_actions_frame,
+        text="Clear",
+        font=("Segoe UI", 12),
+        width=60,
+        height=30,
+        command=clear_password
+    )
+    btn_clear.pack(side="top", pady=(2, 0))
+
+    # Password info label
+    lbl_password_info = ctk.CTkLabel(
+        frame,
+        text="✓ You can edit the generated password or type your own",
+        font=("Segoe UI", 12),
+        text_color="lightblue",
+        anchor="w"
+    )
+    lbl_password_info.grid(row=4, column=0, sticky="w", pady=(0, 20))
+
     # Buttons frame
     buttons_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
-    buttons_frame.pack(pady=10)
+    buttons_frame.pack(pady=20)
 
     # Buttons
     btn_generate = ctk.CTkButton(
         buttons_frame,
-        text="Generate Password",
+        text="Generate Strong Password",
         font=("Segoe UI", 16, "bold"),
-        width=180,
-        height=35,
+        width=220,
+        height=40,
         command=generate_password
     )
-    btn_generate.pack(pady=5)
+    btn_generate.pack(pady=8)
 
     btn_view = ctk.CTkButton(
         buttons_frame,
         text="View Password",
         font=("Segoe UI", 16, "bold"),
-        width=180,
-        height=35,
+        width=220,
+        height=40,
         command=view_password
     )
-    btn_view.pack(pady=5)
+    btn_view.pack(pady=8)
 
     btn_store = ctk.CTkButton(
         buttons_frame,
         text="Store Password",
         font=("Segoe UI", 16, "bold"),
-        width=180,
-        height=35,
+        width=220,
+        height=40,
+        fg_color="#28a745",
+        hover_color="#218838",
         command=lambda: save_password(username)
     )
-    btn_store.pack(pady=10)
+    btn_store.pack(pady=8)
 
     # Center the window
     root.update_idletasks()
-    root.geometry(CenterWindowToDisplay(root, 650, 450, root._get_window_scaling()))
+    root.geometry(CenterWindowToDisplay(root, 650, 600, root._get_window_scaling()))
 
     root.mainloop()
 
