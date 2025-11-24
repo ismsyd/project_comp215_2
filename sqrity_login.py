@@ -13,11 +13,43 @@ def check_and_install_ctk():
     try:
         import customtkinter
         print("customtkinter is already installed!")
+        return True
     except ImportError:
-        print("customtkinter not found. Installing...")
-        subprocess.check_call([sys.executable, "-m", "pip", "install", "customtkinter"])
-        print("customtkinter installed successfully!")
+        print("customtkinter not found.")
+        # Ask user for confirmation
+        root = tk.Tk()
+        root.withdraw()  # Hide the main window
+        response = messagebox.askyesno(
+            "Install Required Package",
+            "customtkinter is required but not installed.\n\n"
+            "Do you want to install it now?\n\n"
+            "This will run: pip install customtkinter"
+        )
+        root.destroy()
 
+        if response:
+            print("Installing customtkinter...")
+            try:
+                subprocess.check_call([sys.executable, "-m", "pip", "install", "customtkinter"])
+                print("customtkinter installed successfully!")
+                return True
+            except subprocess.CalledProcessError:
+                messagebox.showerror(
+                    "Installation Failed",
+                    "Failed to install customtkinter.\n\n"
+                    "Please install it manually using:\n"
+                    "pip install customtkinter"
+                )
+                return False
+        else:
+            messagebox.showinfo(
+                "Installation Cancelled",
+                "customtkinter is required to run this application.\n\n"
+                "Please install it manually using:\n"
+                "pip install customtkinter"
+            )
+            return False
+        
 import customtkinter as ctk
 
 DB_PATH = "users.db"   # same database file you already use
