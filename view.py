@@ -81,11 +81,14 @@ style.configure("Treeview",
                 background="#2b2b2b",
                 foreground="white",
                 fieldbackground="#2b2b2b",
-                borderwidth=0)
+                borderwidth=0,
+                font=("Segoe UI", 16),
+                rowheight=45)
 style.configure("Treeview.Heading",
                 background="#1a1a1a",
                 foreground="#00FFF0",
-                relief="flat")
+                relief="flat",
+                font=("Segoe UI", 16,'bold'))
 style.map("Treeview", background=[('selected', '#2563eb')])
 
 # Scrollbar
