@@ -1,4 +1,4 @@
-# login.py
+# sqrity_login.py
 
 import tkinter as tk
 from tkinter import messagebox
@@ -8,7 +8,8 @@ import os
 import sys
 import subprocess
 
-#Issam added this
+
+# Issam added this
 def check_and_install_ctk():
     try:
         import customtkinter
@@ -50,9 +51,10 @@ def check_and_install_ctk():
             )
             return False
 
+
 import customtkinter as ctk
 
-DB_PATH = "users.db"   # same database file you already use
+DB_PATH = "users.db"  # same database file you already use
 
 
 # ---------- DB HELPERS ----------
@@ -64,11 +66,26 @@ def init_db():
             cur = conn.cursor()
             cur.execute(
                 """
-                CREATE TABLE IF NOT EXISTS users (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    username TEXT NOT NULL UNIQUE,
-                    salt BLOB NOT NULL,
-                    password_hash BLOB NOT NULL
+                CREATE TABLE IF NOT EXISTS users
+                (
+                    id
+                    INTEGER
+                    PRIMARY
+                    KEY
+                    AUTOINCREMENT,
+                    username
+                    TEXT
+                    NOT
+                    NULL
+                    UNIQUE,
+                    salt
+                    BLOB
+                    NOT
+                    NULL,
+                    password_hash
+                    BLOB
+                    NOT
+                    NULL
                 )
                 """
             )
@@ -160,13 +177,14 @@ def open_dashboard(username: str):
     except Exception as e:
         messagebox.showerror("Error", f"Could not open dashboard: {e}")
 
-#Added by Issam
+
+# Added by Issam
 def CenterWindowToDisplay(Screen: ctk.CTk, width: int, height: int, scale_factor: float = 1.0):
     """Centers the window to the main display/monitor"""
     screen_width = Screen.winfo_screenwidth()
     screen_height = Screen.winfo_screenheight()
-    x = int(((screen_width/2) - (width/2)) * scale_factor)
-    y = int(((screen_height/2) - (height/1.5)) * scale_factor)
+    x = int(((screen_width / 2) - (width / 2)) * scale_factor)
+    y = int(((screen_height / 2) - (height / 1.5)) * scale_factor)
     return f"{width}x{height}+{x}+{y}"
 
 
@@ -219,14 +237,12 @@ def show_loading_screen():
     loading.destroy()
 
 
-
-
 # ---------- UI ----------
 
 def main():
     check_and_install_ctk()
     # Show loading screen first
-    #show_loading_screen()
+    # show_loading_screen()
     init_db()
 
     # Configure customtkinter theme
@@ -254,7 +270,7 @@ def main():
     username_label = ctk.CTkLabel(
         form_frame,
         text="Username",
-        font=("Segoe UI", 20,'bold'),
+        font=("Segoe UI", 20, 'bold'),
         anchor="w"
     )
     username_label.grid(row=0, column=0, sticky="w")
@@ -271,7 +287,7 @@ def main():
     password_label = ctk.CTkLabel(
         form_frame,
         text="Password",
-        font=("Segoe UI", 20,'bold'),
+        font=("Segoe UI", 20, 'bold'),
         anchor="w"
     )
     password_label.grid(row=2, column=0, sticky="w")
@@ -280,7 +296,7 @@ def main():
     password_entry = ctk.CTkEntry(
         form_frame,
         font=("Segoe UI", 15),
-        width= 400,
+        width=400,
         height=35,
         show="*"
     )
@@ -307,7 +323,7 @@ def main():
         hover_color="#4B5563"
     )
     # Position show button in the SAME ROW but use sticky="n" to align to top
-    show_btn.grid(row=3, column=1, padx=(10, 0), pady = (3,0) ,sticky="n")
+    show_btn.grid(row=3, column=1, padx=(10, 0), pady=(3, 0), sticky="n")
 
     # Buttons
     buttons_frame = ctk.CTkFrame(root, fg_color="transparent")
@@ -345,7 +361,6 @@ def main():
 
     # CENTER THE WINDOW AFTER ALL WIDGETS ARE CREATED
     root.update_idletasks()
-
 
     root.geometry(CenterWindowToDisplay(root, 650, 350, root._get_window_scaling()))
 
