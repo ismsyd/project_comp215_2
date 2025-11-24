@@ -242,7 +242,7 @@ def show_loading_screen():
 def main():
     check_and_install_ctk()
     # Show loading screen first
-    show_loading_screen()
+    # show_loading_screen()
     init_db()
 
     # Configure customtkinter theme
@@ -341,6 +341,7 @@ def main():
 
     register_btn = ctk.CTkButton(
         buttons_frame,
+        fg_color="#1f59ab",
         text="Register",
         font=("Segoe UI", 20),
         command=on_register,
@@ -351,6 +352,7 @@ def main():
 
     login_btn = ctk.CTkButton(
         buttons_frame,
+        fg_color="#1f59ab",
         text="Login",
         font=("Segoe UI", 20),
         command=on_login,
@@ -369,4 +371,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
