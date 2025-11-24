@@ -2,7 +2,20 @@
 import sys
 import sqlite3
 import tkinter as tk
-from tkinter import ttk, messagebox
+import tkinter.ttk as ttk
+from tkinter import messagebox
+import customtkinter as ctk
+
+def CenterWindowToDisplay(Screen: ctk.CTk, width: int, height: int, scale_factor: float = 1.0):
+    """Centers the window to the main display/monitor"""
+    screen_width = Screen.winfo_screenwidth()
+    screen_height = Screen.winfo_screenheight()
+    x = int(((screen_width/2) - (width/2)) * scale_factor)
+    y = int(((screen_height/2) - (height/1.5)) * scale_factor)
+    return f"{width}x{height}+{x}+{y}"
+
+
+
 
 # ---------- Get username from command-line ----------
 if len(sys.argv) < 2:
@@ -13,12 +26,9 @@ current_user = sys.argv[1]
 
 # ---------- Database helper ----------
 def fetch_passwords_for_user(username):
-    # 🔴 IMPORTANT: Here we use vault.db instead of users.db
     conn = sqlite3.connect("vault.db")
     cur = conn.cursor()
 
-    # Adjust table / column names to match your vault.db schema
-    # Example schema: vault(owner_username TEXT, app_name TEXT, password TEXT)
     cur.execute("""
         SELECT app_name, password
         FROM vault
@@ -29,44 +39,62 @@ def fetch_passwords_for_user(username):
     conn.close()
     return rows
 
-# ---------- GUI ----------
-root = tk.Tk()
-root.title("SQRITY - Password Vault")
+# ---------- GUI with customtkinter ----------
+ctk.set_appearance_mode("dark")
+ctk.set_default_color_theme("blue")
 
-# Same style as login page (dark background, accent buttons, etc.)
-root.configure(bg="#121212")
-root.geometry("600x400")
+root = ctk.CTk()
+root.title("SQRITY - Password Vault")
+root.geometry("650x400")
 root.resizable(False, False)
 
-title_label = tk.Label(
-    root,
+# Main container
+main_frame = ctk.CTkFrame(root, fg_color="#1E1E1E", corner_radius=10)
+main_frame.pack(expand=True, fill="both")
+
+# Title
+title_label = ctk.CTkLabel(
+    main_frame,
     text=f"Stored Passwords for {current_user}",
-    font=("Segoe UI", 18, "bold"),
-    bg="#121212",
-    fg="#00FFF0"
+    font=("Segoe UI", 20, "bold"),
+    text_color="#00FFF0"
 )
 title_label.pack(pady=20)
 
-frame = tk.Frame(root, bg="#1E1E1E")
-frame.pack(padx=20, pady=10, fill="both", expand=True)
+# Treeview frame
+tree_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
+tree_frame.pack(expand=True, fill="both", padx=20, pady=10)
 
+# Create treeview using tkinter (ctk doesn't have native treeview)
 columns = ("app", "password")
-tree = ttk.Treeview(frame, columns=columns, show="headings", height=10)
+tree = ttk.Treeview(tree_frame, columns=columns, show="headings", height=12)
 tree.heading("app", text="Application")
 tree.heading("password", text="Password")
 
-tree.column("app", width=200, anchor="center")
-tree.column("password", width=300, anchor="center")
+tree.column("app", width=250, anchor="center")
+tree.column("password", width=350, anchor="center")
+
+# Style the treeview to match dark theme
+style = ttk.Style()
+style.theme_use("default")
+style.configure("Treeview",
+                background="#2b2b2b",
+                foreground="white",
+                fieldbackground="#2b2b2b",
+                borderwidth=0)
+style.configure("Treeview.Heading",
+                background="#1a1a1a",
+                foreground="#00FFF0",
+                relief="flat")
+style.map("Treeview", background=[('selected', '#2563eb')])
 
 # Scrollbar
-vsb = ttk.Scrollbar(frame, orient="vertical", command=tree.yview)
+vsb = ctk.CTkScrollbar(tree_frame, orientation="vertical", command=tree.yview)
 tree.configure(yscrollcommand=vsb.set)
 
-tree.grid(row=0, column=0, sticky="nsew")
-vsb.grid(row=0, column=1, sticky="ns")
-
-frame.grid_columnconfigure(0, weight=1)
-frame.grid_rowconfigure(0, weight=1)
+# Pack treeview and scrollbar
+tree.pack(side="left", fill="both", expand=True)
+vsb.pack(side="right", fill="y")
 
 # Load data
 try:
@@ -80,19 +108,22 @@ except Exception as e:
     messagebox.showerror("Database Error", str(e))
 
 # Close button
-close_btn = tk.Button(
-    root,
+close_btn = ctk.CTkButton(
+    main_frame,
     text="Close",
-    font=("Segoe UI", 11, "bold"),
-    bg="#00FFF0",
-    fg="#000000",
-    activebackground="#00D4C7",
-    activeforeground="#000000",
-    relief="flat",
-    padx=20,
-    pady=5,
+    font=("Segoe UI", 14, "bold"),
+    width=120,
+    height=35,
+    fg_color="#00FFF0",
+    hover_color="#00D4C7",
+    text_color="#000000",
     command=root.destroy
 )
-close_btn.pack(pady=10)
+close_btn.pack(pady=20)
+
+# Center the window
+root.update_idletasks()
+
+root.geometry(CenterWindowToDisplay(root, 650, 400, root._get_window_scaling()))
 
 root.mainloop()
