@@ -49,7 +49,7 @@ def check_and_install_ctk():
                 "pip install customtkinter"
             )
             return False
-        
+
 import customtkinter as ctk
 
 DB_PATH = "users.db"   # same database file you already use
